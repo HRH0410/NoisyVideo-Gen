@@ -1,0 +1,90 @@
+2026-03-20 10:45:38 | INFO | noisyvideo | config=configs/config.yaml
+2026-03-20 10:45:38 | INFO | noisyvideo | input_dir=data/input_single
+2026-03-20 10:45:38 | INFO | noisyvideo | output_dir=data/output_single36
+2026-03-20 10:45:38 | INFO | noisyvideo | start noise=gaussian_noise
+2026-03-20 10:45:42 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=gaussian_noise psnr=10.794730186462402 ssim=0.02587326057255268
+2026-03-20 10:45:42 | INFO | noisyvideo | start noise=poisson_noise
+2026-03-20 10:45:46 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=poisson_noise psnr=10.492608070373535 ssim=0.04113138094544411
+2026-03-20 10:45:46 | INFO | noisyvideo | start noise=impulse_noise
+2026-03-20 10:45:50 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=impulse_noise psnr=5.486826419830322 ssim=0.0066329617984592915
+2026-03-20 10:45:50 | INFO | noisyvideo | start noise=speckle_noise
+2026-03-20 10:45:54 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=speckle_noise psnr=13.12172794342041 ssim=0.1335899531841278
+2026-03-20 10:45:54 | INFO | noisyvideo | start noise=frame_drop
+2026-03-20 10:45:57 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=frame_drop psnr=6.916133880615234 ssim=0.014760663732886314
+2026-03-20 10:45:57 | INFO | noisyvideo | start noise=frame_replace
+2026-03-20 10:46:26 | INFO | noisyvideo | config=configs/config.yaml
+2026-03-20 10:46:26 | INFO | noisyvideo | input_dir=data/input_single
+2026-03-20 10:46:26 | INFO | noisyvideo | output_dir=data/output_single36
+2026-03-20 10:46:26 | INFO | noisyvideo | start noise=gaussian_noise
+2026-03-20 10:46:30 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=gaussian_noise psnr=10.794730186462402 ssim=0.02587326057255268
+2026-03-20 10:46:30 | INFO | noisyvideo | start noise=poisson_noise
+2026-03-20 10:46:35 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=poisson_noise psnr=10.492608070373535 ssim=0.04113138094544411
+2026-03-20 10:46:35 | INFO | noisyvideo | start noise=impulse_noise
+2026-03-20 10:46:39 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=impulse_noise psnr=5.486826419830322 ssim=0.0066329617984592915
+2026-03-20 10:46:39 | INFO | noisyvideo | start noise=speckle_noise
+2026-03-20 10:46:43 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=speckle_noise psnr=13.12172794342041 ssim=0.1335899531841278
+2026-03-20 10:46:43 | INFO | noisyvideo | start noise=frame_drop
+2026-03-20 10:46:47 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=frame_drop psnr=6.916133880615234 ssim=0.014760663732886314
+2026-03-20 10:46:47 | INFO | noisyvideo | start noise=frame_replace
+2026-03-20 10:46:50 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=frame_replace psnr=5.184203624725342 ssim=0.47391852736473083
+2026-03-20 10:46:50 | INFO | noisyvideo | start noise=frame_repeat
+2026-03-20 10:46:54 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=frame_repeat psnr=inf ssim=1.0
+2026-03-20 10:46:54 | INFO | noisyvideo | start noise=temporal_jitter
+2026-03-20 10:46:57 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=temporal_jitter psnr=6.539520740509033 ssim=0.013417921960353851
+2026-03-20 10:46:57 | INFO | noisyvideo | start noise=gaussian_blur
+2026-03-20 10:47:01 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=gaussian_blur psnr=25.430288314819336 ssim=0.8499627709388733
+2026-03-20 10:47:01 | INFO | noisyvideo | start noise=defocus_blur
+2026-03-20 10:47:05 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=defocus_blur psnr=36.37211990356445 ssim=0.968546450138092
+2026-03-20 10:47:05 | INFO | noisyvideo | start noise=glass_blur
+2026-03-20 10:52:05 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=glass_blur psnr=32.487815856933594 ssim=0.9365637898445129
+2026-03-20 10:52:05 | INFO | noisyvideo | start noise=motion_blur
+2026-03-20 10:52:09 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=motion_blur psnr=26.624393463134766 ssim=0.8889678716659546
+2026-03-20 10:52:09 | INFO | noisyvideo | start noise=zoom_blur
+2026-03-20 10:52:12 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=zoom_blur psnr=23.07082176208496 ssim=0.8367846608161926
+2026-03-20 10:52:12 | INFO | noisyvideo | start noise=brightness
+2026-03-20 10:52:16 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=brightness psnr=21.65060043334961 ssim=0.8513092398643494
+2026-03-20 10:52:16 | INFO | noisyvideo | start noise=contrast
+2026-03-20 10:52:20 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=contrast psnr=23.427091598510742 ssim=0.7689877152442932
+2026-03-20 10:52:20 | INFO | noisyvideo | start noise=color_shift
+2026-03-20 10:52:23 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=color_shift psnr=20.374773025512695 ssim=0.9063859581947327
+2026-03-20 10:52:23 | INFO | noisyvideo | start noise=overexposure
+2026-03-20 10:52:27 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=overexposure psnr=17.695552825927734 ssim=0.7409173846244812
+2026-03-20 10:52:27 | INFO | noisyvideo | start noise=underexposure
+2026-03-20 10:52:30 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=underexposure psnr=14.197005271911621 ssim=0.6043924689292908
+2026-03-20 10:52:30 | INFO | noisyvideo | start noise=flicker
+2026-03-20 10:52:34 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=flicker psnr=36.45857620239258 ssim=0.9679271578788757
+2026-03-20 10:52:34 | INFO | noisyvideo | start noise=shadow
+2026-03-20 10:52:38 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=shadow psnr=14.054701805114746 ssim=0.8269510269165039
+2026-03-20 10:52:38 | INFO | noisyvideo | start noise=specular_reflection
+2026-03-20 10:52:41 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=specular_reflection psnr=20.190044403076172 ssim=0.9059516787528992
+2026-03-20 10:52:41 | INFO | noisyvideo | start noise=frost
+2026-03-20 10:52:45 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=frost psnr=16.447084426879883 ssim=0.9280728101730347
+2026-03-20 10:52:45 | INFO | noisyvideo | start noise=snow
+2026-03-20 10:52:49 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=snow psnr=16.552263259887695 ssim=0.6986125707626343
+2026-03-20 10:52:49 | INFO | noisyvideo | start noise=fog
+2026-03-20 10:56:07 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=fog psnr=11.56773853302002 ssim=0.7470592260360718
+2026-03-20 10:56:07 | INFO | noisyvideo | start noise=rain
+2026-03-20 10:56:11 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=rain psnr=24.678857803344727 ssim=0.7265547513961792
+2026-03-20 10:56:11 | INFO | noisyvideo | start noise=rolling_shutter
+2026-03-20 10:56:14 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=rolling_shutter psnr=17.756765365600586 ssim=0.761419415473938
+2026-03-20 10:56:14 | INFO | noisyvideo | start noise=resolution_degrade
+2026-03-20 10:56:18 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=resolution_degrade psnr=30.054264068603516 ssim=0.9250411987304688
+2026-03-20 10:56:18 | INFO | noisyvideo | start noise=stretch_squish
+2026-03-20 10:56:21 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=stretch_squish psnr=26.409244537353516 ssim=0.8834369778633118
+2026-03-20 10:56:21 | INFO | noisyvideo | start noise=edge_sawtooth
+2026-03-20 10:56:25 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=edge_sawtooth psnr=30.535978317260742 ssim=0.9454027414321899
+2026-03-20 10:56:25 | INFO | noisyvideo | start noise=color_quantization
+2026-03-20 10:56:29 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=color_quantization psnr=32.3510856628418 ssim=0.8258851170539856
+2026-03-20 10:56:29 | INFO | noisyvideo | start noise=elastic_transform
+2026-03-20 10:56:33 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=elastic_transform psnr=30.683456420898438 ssim=0.9321228861808777
+2026-03-20 10:56:33 | INFO | noisyvideo | start noise=random_block
+2026-03-20 10:56:36 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=random_block psnr=13.4170560836792 ssim=0.7680032849311829
+2026-03-20 10:56:36 | INFO | noisyvideo | start noise=target_block
+2026-03-20 10:56:40 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=target_block psnr=13.91810417175293 ssim=0.841552197933197
+2026-03-20 10:56:40 | INFO | noisyvideo | start noise=jpeg_artifact
+2026-03-20 10:56:43 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=jpeg_artifact psnr=27.584943771362305 ssim=0.8105024099349976
+2026-03-20 10:56:43 | INFO | noisyvideo | start noise=bit_error
+2026-03-20 10:56:47 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=bit_error psnr=23.710250854492188 ssim=0.858733057975769
+2026-03-20 10:56:47 | INFO | noisyvideo | start noise=h265_compression
+2026-03-20 10:56:55 | INFO | noisyvideo | processed video=sample_blazes.mp4 noise=h265_compression psnr=32.032039642333984 ssim=0.9200038313865662
+2026-03-20 10:56:55 | INFO | noisyvideo | done processed=36 failed=0

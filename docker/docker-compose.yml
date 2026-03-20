@@ -1,0 +1,15 @@
+services:
+  noisyvideo-gen:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: noisyvideo-gen
+    working_dir: /workspace/NoisyVideo-Gen
+    volumes:
+      - ..:/workspace/NoisyVideo-Gen
+    environment:
+      - PYTHONPATH=/workspace/NoisyVideo-Gen/src
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    stdin_open: true
+    tty: true

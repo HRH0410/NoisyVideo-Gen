@@ -1,0 +1,62 @@
+project:
+  name: "NoisyVideo-Gen"
+  seed: 42
+
+paths:
+  input_dir: "data/input"
+  output_dir: "data/output"
+  manifest_dir: "data/manifests"
+  log_dir: "outputs/logs"
+  report_dir: "outputs/reports"
+  preview_dir: "outputs/previews"
+
+video:
+  sample_method: "uniform"
+  num_sampled_frames: 8
+  frame_ratio: 0.9
+  output_fps: 8
+
+runtime:
+  save_metrics: true
+  save_manifest: true
+  save_preview: true
+  log_level: "INFO"
+
+benchmark:
+  enabled_noises:
+    - gaussian_noise
+    - poisson_noise
+    - impulse_noise
+    - speckle_noise
+    - frame_drop
+    - frame_replace
+    - frame_repeat
+    - temporal_jitter
+    - gaussian_blur
+    - defocus_blur
+    - glass_blur
+    - motion_blur
+    - zoom_blur
+    - brightness
+    - contrast
+    - color_shift
+    - overexposure
+    - underexposure
+    - flicker
+    - shadow
+    - specular_reflection
+    - frost
+    - snow
+    - fog
+    - rain
+    - rolling_shutter
+    - resolution_degrade
+    - stretch_squish
+    - edge_sawtooth
+    - color_quantization
+    - elastic_transform
+    - random_block
+    - target_block
+    - jpeg_artifact
+    - bit_error
+    - h265_compression

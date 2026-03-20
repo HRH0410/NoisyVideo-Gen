@@ -1,0 +1,7 @@
+numpy>=1.24.0
+opencv-python>=4.8.0
+scikit-image>=0.22.0
+pyyaml>=6.0.0
+tqdm>=4.66.0
+imageio>=2.34.0
+imageio-ffmpeg>=0.5.1

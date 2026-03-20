@@ -1,0 +1,221 @@
+gaussian_noise:
+  category: quality
+  supports_severity: true
+  default_params:
+    sigma: 100
+
+poisson_noise:
+  category: quality
+  supports_severity: true
+  default_params:
+    gain: 0.01
+
+impulse_noise:
+  category: quality
+  supports_severity: true
+  default_params:
+    probability: 0.7
+
+speckle_noise:
+  category: quality
+  supports_severity: true
+  default_params:
+    intensity: 0.7
+    grain_size: 1
+
+frame_drop:
+  category: temporal
+  supports_severity: true
+  default_params: {}
+
+frame_replace:
+  category: temporal
+  supports_severity: true
+  default_params: {}
+
+frame_repeat:
+  category: temporal
+  supports_severity: true
+  default_params: {}
+
+temporal_jitter:
+  category: temporal
+  supports_severity: true
+  default_params:
+    order: replace_first
+
+gaussian_blur:
+  category: blur
+  supports_severity: true
+  default_params:
+    kernel_size: 101
+    sigma: 20.0
+
+defocus_blur:
+  category: blur
+  supports_severity: true
+  default_params:
+    radius: 3
+    anti_alias_sigma: 0.1
+
+glass_blur:
+  category: blur
+  supports_severity: true
+  default_params:
+    sigma: 1.0
+    max_delta: 2
+    iterations: 3
+
+motion_blur:
+  category: blur
+  supports_severity: true
+  default_params:
+    length: 101
+    angle: 45.0
+
+zoom_blur:
+  category: blur
+  supports_severity: true
+  default_params:
+    delta: 0.02
+    max_zoom: 1.3
+
+brightness:
+  category: lighting
+  supports_severity: true
+  default_params: {}
+
+contrast:
+  category: lighting
+  supports_severity: true
+  default_params:
+    m: -5
+    M: 5
+
+color_shift:
+  category: lighting
+  supports_severity: true
+  default_params:
+    shift: 1
+    per_channel: true
+
+overexposure:
+  category: lighting
+  supports_severity: true
+  default_params:
+    b_min: 0.1
+    b_max: 0.3
+    gamma_min: 1.1
+    gamma_max: 1.4
+
+underexposure:
+  category: lighting
+  supports_severity: true
+  default_params:
+    b_min: -0.3
+    b_max: -0.1
+    gamma_min: 0.6
+    gamma_max: 0.9
+
+flicker:
+  category: lighting
+  supports_severity: true
+  default_params:
+    rho: 0.2
+
+shadow:
+  category: scene
+  supports_severity: true
+  default_params: {}
+
+specular_reflection:
+  category: scene
+  supports_severity: true
+  default_params: {}
+
+frost:
+  category: scene
+  supports_severity: true
+  default_params: {}
+
+snow:
+  category: scene
+  supports_severity: true
+  default_params: {}
+
+fog:
+  category: scene
+  supports_severity: true
+  default_params: {}
+
+rain:
+  category: scene
+  supports_severity: true
+  default_params: {}
+
+rolling_shutter:
+  category: digital
+  supports_severity: true
+  default_params:
+    amp: 8
+
+resolution_degrade:
+  category: digital
+  supports_severity: true
+  default_params:
+    scale: 0.1
+
+stretch_squish:
+  category: digital
+  supports_severity: true
+  default_params:
+    scale: 0.03333333333333333
+
+edge_sawtooth:
+  category: digital
+  supports_severity: true
+  default_params:
+    rho: 0.3
+
+color_quantization:
+  category: digital
+  supports_severity: true
+  default_params:
+    bits: 3
+
+elastic_transform:
+  category: digital
+  supports_severity: true
+  default_params: {}
+
+random_block:
+  category: occlusion
+  supports_severity: true
+  default_params: {}
+
+target_block:
+  category: occlusion
+  supports_severity: true
+  default_params:
+    fallback_ratio: 0.4
+
+jpeg_artifact:
+  category: compression
+  supports_severity: true
+  default_params:
+    quality: 1
+
+bit_error:
+  category: compression
+  supports_severity: true
+  default_params:
+    min_region_ratio: 0.25
+    max_region_ratio: 0.5
+
+h265_compression:
+  category: compression
+  supports_severity: true
+  default_params:
+    crf: 38
+    bitrate: 200k
+    preset: slow
