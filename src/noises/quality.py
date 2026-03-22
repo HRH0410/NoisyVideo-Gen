@@ -20,7 +20,7 @@ class GaussianNoise(BaseNoiseLike):
     ) -> list[np.ndarray]:
         """对选中帧叠加高斯噪声。"""
         # 论文默认：零均值高斯噪声，标准差 100。
-        sigma = float(self.params.get("sigma", 100.0)) * severity_scale(severity, 0.6, 1.8)
+        sigma = float(self.params.get("sigma", 100.0)) 
         rng = np.random.default_rng(seed)
         selected = set(selected_indices)
 
@@ -49,7 +49,7 @@ class PoissonNoise(BaseNoiseLike):
         **kwargs,
     ) -> list[np.ndarray]:
         # 论文默认：先乘 gain (0.01) 作为泊松率，再除 gain 恢复尺度。
-        gain = float(self.params.get("gain", 0.01)) * severity_scale(severity, 0.6, 1.8)
+        gain = float(self.params.get("gain", 0.01)) 
         gain = max(1e-6, gain)
         rng = np.random.default_rng(seed)
         selected = set(selected_indices)
@@ -78,8 +78,9 @@ class ImpulseNoise(BaseNoiseLike):
         seed: int | None = None,
         **kwargs,
     ) -> list[np.ndarray]:
-        # 论文默认：以概率 p=0.7 执行冲击噪声；<p/2 置黑，p/2~p 置白。
-        p = float(self.params.get("probability", 0.7)) * severity_scale(severity, 0.6, 1.6)
+        # 论文默认：对每帧采样 uniform mask；
+        # mask < 0.35 的像素置黑，0.35 <= mask < 0.7 的像素置白，其余不变。
+        p = float(self.params.get("probability", 0.7)) 
         p = float(np.clip(p, 0.0, 1.0))
         rng = np.random.default_rng(seed)
         selected = set(selected_indices)
@@ -113,7 +114,7 @@ class SpeckleNoise(BaseNoiseLike):
         **kwargs,
     ) -> list[np.ndarray]:
         # 论文默认：I_noisy = I * (1 + noise)，intensity=0.7。
-        intensity = float(self.params.get("intensity", 0.7)) * severity_scale(severity, 0.6, 1.8)
+        intensity = float(self.params.get("intensity", 0.7)) 
         grain_size = int(self.params.get("grain_size", 1))
         grain_size = max(1, grain_size)
         rng = np.random.default_rng(seed)

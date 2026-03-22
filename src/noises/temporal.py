@@ -12,6 +12,17 @@ def _sample_indices(rng: np.random.Generator, n: int, k: int) -> list[int]:
     return sorted(int(i) for i in rng.choice(n, size=k, replace=False))
 
 
+def _sample_from_pool(rng: np.random.Generator, pool: list[int], k: int) -> list[int]:
+    """从给定候选池中无放回采样索引。"""
+    if not pool or k <= 0:
+        return []
+    k = min(len(pool), k)
+    if k == len(pool):
+        return sorted(pool)
+    picked = rng.choice(len(pool), size=k, replace=False)
+    return sorted(int(pool[int(i)]) for i in picked)
+
+
 def _apply_frame_drop(frames: list[np.ndarray], indices: list[int]) -> list[np.ndarray]:
     drop_set = set(indices)
     out: list[np.ndarray] = []
@@ -28,15 +39,23 @@ def _apply_frame_replace_shuffle(
     indices: list[int],
     rng: np.random.Generator,
 ) -> list[np.ndarray]:
-    """将选中帧集合内部随机置换后再写回原位置。"""
+    """将选中帧集合内部随机置换后再写回原位置，避免恒等置换。"""
+    indices = sorted(set(int(i) for i in indices if 0 <= i < len(frames)))
     if len(indices) <= 1:
         return [f.copy() for f in frames]
 
     out = [f.copy() for f in frames]
     perm = list(indices)
-    rng.shuffle(perm)
+
+    # 避免完全不变
+    while True:
+        rng.shuffle(perm)
+        if perm != indices:
+            break
+
     for dst, src in zip(indices, perm):
         out[dst] = frames[src].copy()
+
     return out
 
 
@@ -120,15 +139,25 @@ class TemporalJitter(BaseNoiseLike):
         if n == 0:
             return []
 
-        rho = float(len(selected_indices) / n) if n > 0 else 0.0
+        base_indices = sorted(set(int(i) for i in selected_indices if 0 <= i < n))
+        if not base_indices:
+            return [f.copy() for f in frames]
+
+        # 噪声比率由上游 selected_indices 决定，这里在该集合内做 jitter 拆分。
+        rho = float(len(base_indices) / n)
         alpha = float(rho * rng.random())
         beta = float(1.0 - alpha)
 
-        k_replace = int(round(alpha * n))
-        k_drop = int(round(beta * n))
+        # replace 比例按 alpha 对全体帧计，再裁剪到候选池规模。
+        k_replace = min(len(base_indices), int(round(alpha * n)))
+        replace_indices = _sample_from_pool(rng, base_indices, k_replace)
 
-        replace_indices = _sample_indices(rng, n, k_replace)
-        drop_indices = _sample_indices(rng, n, k_drop)
+        replace_set = set(replace_indices)
+        drop_pool = [i for i in base_indices if i not in replace_set]
+
+        # drop 比例按 beta 在候选池上采样，避免越界并保持集合拆分语义。
+        k_drop = min(len(drop_pool), int(round(beta * len(base_indices))))
+        drop_indices = _sample_from_pool(rng, drop_pool, k_drop)
 
         order = str(self.params.get("order", "replace_first"))
         out = [f.copy() for f in frames]

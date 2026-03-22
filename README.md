@@ -1,6 +1,8 @@
 # NoisyVideo-Gen
 一个用于构建视频噪声基准集的数据生成工程。项目支持 36 种视频扰动，按配置批量读取输入视频，输出扰动视频、指标、manifest 与运行报告。
 
+> 说明：本项目已移除 calibration（自动校准）相关逻辑，当前仅使用论文参数（`noise_catalog.yaml` 中的 `default_params`）与命令行显式参数运行。
+
 ## 1. 项目架构
 
 ### 1.1 顶层目录
@@ -161,6 +163,14 @@ source .venv/bin/activate
 pip install -r requirements.txt
 python3 src/main.py --config configs/config.yaml
 ```
+
+### 3.3 参数来源说明（重要）
+
+- 默认参数来源：`configs/noise_catalog.yaml` 的 `default_params`
+- 本项目不再支持 calibration profile / 校准回写
+- 如需调参，请直接修改 `noise_catalog.yaml` 或在命令行通过业务脚本传入 `params`
+- 默认分档策略：未显式传 `--severity` 时，`supports_severity=true` 的噪声自动使用 `severity=5`（最强档）；`supports_severity=false` 的噪声使用 `None`，仅按默认参数运行
+- 若显式传入 `--severity`，则以命令行为准
 
 ## 4. 结果怎么看
 

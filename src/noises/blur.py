@@ -139,13 +139,14 @@ class GlassBlur(BaseNoiseLike):
                 for y in range(1, h - 1):
                     for x in range(1, w - 1):
                         dx = int(rng.integers(-max_delta, max_delta + 1))
-                        dy = int(rng.integers(-max_delta, max_delta + 1))
+                        dy = int(rng.integers(-max_delta, max_delta + 1))                        
                         nx = int(np.clip(x + dx, 0, w - 1))
                         ny = int(np.clip(y + dy, 0, h - 1))
                         img[y, x], img[ny, nx] = img[ny, nx].copy(), img[y, x].copy()
 
             img = cv2.GaussianBlur(img, (0, 0), sigmaX=sigma, sigmaY=sigma)
             out.append(np.clip(img, 0, 255).astype(np.uint8))
+        
         return out
 
 

@@ -72,21 +72,6 @@ def list_available_noises() -> list[str]:
     return sorted(NOISE_REGISTRY.keys())
 
 
-def _get_catalog_severity_params(
-    noise_meta: dict[str, Any],
-    severity: int | None,
-) -> dict[str, Any]:
-    """从 noise catalog 中读取指定 severity 的参数覆盖。"""
-    if severity is None:
-        return {}
-
-    severity_params = noise_meta.get("severity_params", {})
-    if not isinstance(severity_params, dict):
-        return {}
-
-    return dict(severity_params.get(str(int(severity)), {}))
-
-
 def build_noise(
     name: str,
     params: dict[str, Any] | None = None,
@@ -102,8 +87,6 @@ def build_noise(
     if noise_catalog and key in noise_catalog:
         noise_meta = noise_catalog[key]
         merged_params.update(noise_meta.get("default_params", {}))
-        # 若存在按 severity 的校准参数，优先覆盖 default_params。
-        merged_params.update(_get_catalog_severity_params(noise_meta, severity))
     if params:
         merged_params.update(params)
 

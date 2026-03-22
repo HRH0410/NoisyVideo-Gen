@@ -1,0 +1,35 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Local environment files
+.env
+.env.*
+
+# Project generated outputs (do not upload)
+data/input/
+data/output/
+data/output_*/
+data/manifests/
+outputs/
+
+# Local-only docs
+Readme_for_Copilot.md

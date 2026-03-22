@@ -83,11 +83,16 @@ def main() -> None:
     summary: dict[str, dict] = {}
 
     for noise_name in enabled_noises:
+        noise_meta = noise_catalog.get(noise_name, {})
+        supports_severity = bool(noise_meta.get("supports_severity", False))
+        # 默认策略：若未显式传入 --severity，则支持分档的噪声使用最强档（5）。
+        run_severity = args.severity if args.severity is not None else (5 if supports_severity else None)
+
         logger.info("start noise=%s", noise_name)
         records, failed = processor.process_batch(
             video_paths=videos,
             noise_name=noise_name,
-            severity=args.severity,
+            severity=run_severity,
             noise_params=None,
             seed=args.seed,
         )
@@ -98,7 +103,7 @@ def main() -> None:
         summary[noise_name] = {
             "processed": len(records),
             "failed": len(failed),
-            "severity": args.severity,
+            "severity": run_severity,
         }
 
     report_path = Path(paths_cfg["report_dir"]) / "run_summary.json"

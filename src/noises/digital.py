@@ -163,7 +163,7 @@ class ElasticTransform(BaseNoiseLike):
 	def apply(self, frames, selected_indices, severity=None, seed=None, **kwargs):
 		"""Elastic transform：随机位移场 + 高斯平滑 + 双线性重映射。"""
 		alpha_table = {1: 12.5, 2: 16.25, 3: 21.25, 4: 25.0, 5: 30.0}
-		sev = 3 if severity is None else int(np.clip(severity, 1, 5))
+		sev = 5 if severity is None else int(np.clip(severity, 1, 5))
 		alpha = float(self.params.get("alpha", alpha_table[sev]))
 		rng = np.random.default_rng(seed)
 

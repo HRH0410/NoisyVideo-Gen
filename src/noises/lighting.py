@@ -19,7 +19,7 @@ class Brightness(BaseNoiseLike):
         **kwargs,
     ) -> list[np.ndarray]:
         """Brightness transform：按 c_s=0.1*s 提升亮度。"""
-        sev = 3 if severity is None else int(np.clip(severity, 1, 5))
+        sev = 5 if severity is None else int(np.clip(severity, 1, 5))
         c_s = float(self.params.get("c_s", 0.1 * sev))
         c_s = float(np.clip(c_s, -1.0, 1.0))
         selected = set(selected_indices)
