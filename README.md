@@ -205,3 +205,52 @@ rm -f outputs/reports/run_summary.json
 ```
 
 再重新执行一次完整任务，结果会更干净。
+
+### 5.2 33 种先跑，3 种慢噪声后跑（后台任务）
+
+如果你想先跳过 `rain`、`fog`、`glass_blur`，项目已提供脚本：
+
+- `scripts/run_fast33_background.sh`
+
+这个脚本会顺序运行其余 33 种噪声，对输入目录中的所有视频逐个加扰动。
+
+#### 后台启动 33 种（断开终端不影响）
+
+```bash
+cd /data1/hrh/NoisyVideo-Gen
+nohup bash scripts/run_fast33_background.sh data/input data/output_fast33 42 \
+  > outputs/logs/fast33_nohup.log 2>&1 &
+echo $! > outputs/logs/fast33.pid
+```
+
+查看进度：
+
+```bash
+tail -f outputs/logs/fast33_nohup.log
+```
+
+停止任务：
+
+```bash
+kill "$(cat outputs/logs/fast33.pid)"
+```
+
+> 说明：`nohup` 可保证你退出当前终端/SSH 后任务继续；但如果机器关机或重启，任务仍会中断。
+
+#### 慢噪声单独跑（rain / fog / glass_blur）
+
+```bash
+cd /data1/hrh/NoisyVideo-Gen
+
+docker compose -f docker/docker-compose.yml run --rm -T noisyvideo-gen \
+  python3 src/main.py --config configs/config.yaml --noise rain \
+  --input_dir data/input --output_dir data/output_slow3 --seed 42
+
+docker compose -f docker/docker-compose.yml run --rm -T noisyvideo-gen \
+  python3 src/main.py --config configs/config.yaml --noise fog \
+  --input_dir data/input --output_dir data/output_slow3 --seed 42
+
+docker compose -f docker/docker-compose.yml run --rm -T noisyvideo-gen \
+  python3 src/main.py --config configs/config.yaml --noise glass_blur \
+  --input_dir data/input --output_dir data/output_slow3 --seed 42
+```
