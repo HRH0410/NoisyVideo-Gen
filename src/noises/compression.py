@@ -4,7 +4,6 @@ import tempfile
 from pathlib import Path
 
 import cv2
-import imageio.v3 as iio
 import numpy as np
 
 from . import BaseNoiseLike
@@ -144,8 +143,11 @@ class H265Compression(BaseNoiseLike):
         preset = str(self.params.get("preset", "slow"))
 
         def _h265_roundtrip(frame_bgr: np.ndarray, crf_value: int, bitrate_value: str) -> np.ndarray:
+            import imageio.v3 as iio
+
             with tempfile.TemporaryDirectory() as td:
                 video_path = Path(td) / "tmp.mp4"
+                target_h, target_w = frame_bgr.shape[:2]
 
                 rgb = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)
 
@@ -158,6 +160,9 @@ class H265Compression(BaseNoiseLike):
                         "-crf", str(crf_value),
                         "-b:v", bitrate_value,
                         "-preset", preset,
+                        "-pix_fmt", "yuv420p",
+                        "-tag:v", "hvc1",
+                        "-movflags", "+faststart",
                     ],
                 )
 
@@ -166,7 +171,10 @@ class H265Compression(BaseNoiseLike):
                     decoded = decoded[0]
 
                 decoded = decoded.astype(np.uint8)
-                return cv2.cvtColor(decoded, cv2.COLOR_RGB2BGR)
+                decoded_bgr = cv2.cvtColor(decoded, cv2.COLOR_RGB2BGR)
+                if decoded_bgr.shape[:2] != (target_h, target_w):
+                    decoded_bgr = cv2.resize(decoded_bgr, (target_w, target_h), interpolation=cv2.INTER_LINEAR)
+                return decoded_bgr
 
         selected = set(selected_indices)
         out: list[np.ndarray] = []

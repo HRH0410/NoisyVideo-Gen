@@ -7,6 +7,7 @@ services:
     working_dir: /workspace/NoisyVideo-Gen
     volumes:
       - ..:/workspace/NoisyVideo-Gen
+      - /data0/lch:/data0/lch
     environment:
       - PYTHONPATH=/workspace/NoisyVideo-Gen/src
       - NVIDIA_VISIBLE_DEVICES=all

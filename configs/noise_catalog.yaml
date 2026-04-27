@@ -147,12 +147,17 @@ snow:
 fog:
   category: scene
   supports_severity: true
-  default_params: {}
+  default_params:
+    temporal_shift_px: 4
+    compute_scale: 0.6
 
 rain:
   category: scene
   supports_severity: true
-  default_params: {}
+  default_params:
+    temporal_shift_px: 4
+    density_compute_scale: 0.6
+    fog_compute_scale: 0.6
 
 rolling_shutter:
   category: digital

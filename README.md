@@ -254,3 +254,88 @@ docker compose -f docker/docker-compose.yml run --rm -T noisyvideo-gen \
   python3 src/main.py --config configs/config.yaml --noise glass_blur \
   --input_dir data/input --output_dir data/output_slow3 --seed 42
 ```
+
+### 5.3 从训练 JSON 批量生成 8 帧加噪短视频
+
+适用于你的实际实验数据：
+
+- 训练 JSON：`/data0/lch/llama-factory/formatted_train_data_5000.json`
+- 视频根目录：`/data0/lch/llama-factory`
+
+脚本位置：`scripts/build_noisy_dataset_from_json.py`
+
+#### 输出结构
+
+建议输出到：`/data0/lch/noisyvideo_gen_train_outputs/`
+
+```text
+noisyvideo_gen_train_outputs/
+  videos/
+    <noise_name>/
+      academic_source/Charades/RW587.mp4
+  manifests/
+    <noise_name>.jsonl
+  run_summary.json
+  logs/
+    run.log
+```
+
+这种组织方式按噪声分层，后续如果只想取某一种噪声，直接进对应噪声目录即可。
+
+#### Docker 运行前提
+
+因为输出目录在 `/data0/lch`，容器里需要额外挂载这块路径：
+
+```bash
+cd /data1/hrh/NoisyVideo-Gen
+docker compose -f docker/docker-compose.yml build
+```
+
+#### 先跑一个噪声看效果
+
+```bash
+cd /data1/hrh/NoisyVideo-Gen
+docker compose -f docker/docker-compose.yml run --rm -T \
+  -v /data0/lch:/data0/lch noisyvideo-gen \
+  python3 scripts/build_noisy_dataset_from_json.py \
+    --json_path /data0/lch/llama-factory/formatted_train_data_5000.json \
+    --video_root /data0/lch/llama-factory \
+    --output_root /data0/lch/noisyvideo_gen_train_outputs \
+    --noise gaussian_noise \
+    --severity 5
+```
+
+#### 跑 33 个快噪声（rain / fog / glass_blur 先不跑）
+
+```bash
+cd /data1/hrh/NoisyVideo-Gen
+docker compose -f docker/docker-compose.yml run --rm -T \
+  -v /data0/lch:/data0/lch noisyvideo-gen \
+  python3 scripts/build_noisy_dataset_from_json.py \
+    --json_path /data0/lch/llama-factory/formatted_train_data_5000.json \
+    --video_root /data0/lch/llama-factory \
+    --output_root /data0/lch/noisyvideo_gen_train_outputs \
+    --noise fast33 \
+    --severity 5
+```
+
+#### 慢噪声后面单独跑
+
+```bash
+cd /data1/hrh/NoisyVideo-Gen
+docker compose -f docker/docker-compose.yml run --rm -T \
+  -v /data0/lch:/data0/lch noisyvideo-gen \
+  python3 scripts/build_noisy_dataset_from_json.py \
+    --json_path /data0/lch/llama-factory/formatted_train_data_5000.json \
+    --video_root /data0/lch/llama-factory \
+    --output_root /data0/lch/noisyvideo_gen_train_outputs \
+    --noise slow3 \
+    --severity 5
+```
+
+#### 常用补充参数
+
+- `--max_videos 20`：先抽前 20 个视频试跑
+- `--resume`：已有结果自动跳过
+- `--overwrite`：覆盖已有结果
+- `--dry_run`：只检查路径和计划，不真正写文件

@@ -113,7 +113,7 @@ class GlassBlur(BaseNoiseLike):
         super().__init__(name="glass_blur", category="blur", params=params or {})
 
     def apply(self, frames, selected_indices, severity=None, seed=None, **kwargs):
-        """Glass blur: 先高斯->局部洗牌->再高斯。"""
+        """Glass blur: 先高斯->局部扰动重映射->再高斯。"""
         s = _severity_index(severity)
         sigma_table = {1: 0.7, 2: 0.9, 3: 1.0, 4: 1.1, 5: 1.5}
         delta_table = {1: 1, 2: 2, 3: 2, 4: 3, 5: 4}
@@ -135,18 +135,24 @@ class GlassBlur(BaseNoiseLike):
             img = cv2.GaussianBlur(frame, (0, 0), sigmaX=sigma, sigmaY=sigma)
             h, w = img.shape[:2]
 
+            if h <= 2 or w <= 2:
+                out.append(cv2.GaussianBlur(img, (0, 0), sigmaX=sigma, sigmaY=sigma))
+                continue
+
+            yy, xx = np.indices((h - 2, w - 2), dtype=np.int32)
+            yy += 1
+            xx += 1
+
             for _ in range(max(1, n_iter)):
-                for y in range(1, h - 1):
-                    for x in range(1, w - 1):
-                        dx = int(rng.integers(-max_delta, max_delta + 1))
-                        dy = int(rng.integers(-max_delta, max_delta + 1))                        
-                        nx = int(np.clip(x + dx, 0, w - 1))
-                        ny = int(np.clip(y + dy, 0, h - 1))
-                        img[y, x], img[ny, nx] = img[ny, nx].copy(), img[y, x].copy()
+                dx = rng.integers(-max_delta, max_delta + 1, size=(h - 2, w - 2), dtype=np.int32)
+                dy = rng.integers(-max_delta, max_delta + 1, size=(h - 2, w - 2), dtype=np.int32)
+                nx = np.clip(xx + dx, 0, w - 1)
+                ny = np.clip(yy + dy, 0, h - 1)
+                img[1 : h - 1, 1 : w - 1] = img[ny, nx]
 
             img = cv2.GaussianBlur(img, (0, 0), sigmaX=sigma, sigmaY=sigma)
             out.append(np.clip(img, 0, 255).astype(np.uint8))
-        
+
         return out
 
 

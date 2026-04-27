@@ -100,6 +100,22 @@ def _fog_fusion(image_01: np.ndarray, fog_01: np.ndarray, strength: float) -> np
 	return np.clip(merged * (max_val / den), 0.0, 1.0)
 
 
+def _rolled_fog_map(base_map: np.ndarray, rng: np.random.Generator, max_shift: int = 4) -> np.ndarray:
+	"""对基础雾图做轻微循环平移，保持雾感同时避免逐帧重建分形图的高开销。"""
+	if max_shift <= 0:
+		return base_map
+	dy = int(rng.integers(-max_shift, max_shift + 1))
+	dx = int(rng.integers(-max_shift, max_shift + 1))
+	return np.roll(base_map, shift=(dy, dx), axis=(0, 1))
+
+
+def _scaled_hw(h: int, w: int, scale: float) -> tuple[int, int]:
+	s = float(np.clip(scale, 0.1, 1.0))
+	sh = max(1, int(round(h * s)))
+	sw = max(1, int(round(w * s)))
+	return sh, sw
+
+
 class Shadow(BaseNoiseLike):
 	def __init__(self, params: dict | None = None) -> None:
 		super().__init__(name="shadow", category="scene", params=params or {})
@@ -292,6 +308,9 @@ class Fog(BaseNoiseLike):
 		c_s = c_values[sev]
 		selected = set(selected_indices)
 		out = []
+		fog_cache: dict[tuple[int, int], np.ndarray] = {}
+		shift_px = int(self.params.get("temporal_shift_px", 4))
+		compute_scale = float(self.params.get("compute_scale", 1.0))
 
 		for i, frame in enumerate(frames):
 			if i not in selected:
@@ -299,8 +318,17 @@ class Fog(BaseNoiseLike):
 				continue
 
 			h, w = frame.shape[:2]
-			side = _next_pow2(max(h, w))
-			F = _diamond_square_map(side, d_s, rng)[:h, :w].astype(np.float32)
+			key = (h, w)
+			if key not in fog_cache:
+				if compute_scale >= 0.999:
+					side = _next_pow2(max(h, w))
+					fog_cache[key] = _diamond_square_map(side, d_s, rng)[:h, :w].astype(np.float32)
+				else:
+					sh, sw = _scaled_hw(h, w, compute_scale)
+					side = _next_pow2(max(sh, sw))
+					low = _diamond_square_map(side, d_s, rng)[:sh, :sw].astype(np.float32)
+					fog_cache[key] = cv2.resize(low, (w, h), interpolation=cv2.INTER_CUBIC).astype(np.float32)
+			F = _rolled_fog_map(fog_cache[key], rng, max_shift=shift_px)
 			I = frame.astype(np.float32) / 255.0
 			F3 = F[..., None]
 			If = np.clip((I + c_s * F3) / (1.0 + c_s), 0.0, 1.0)
@@ -327,15 +355,30 @@ class Rain(BaseNoiseLike):
 		kernel = _motion_blur_kernel(int(L_s), float(rng.uniform(0.0, 180.0)))
 		selected = set(selected_indices)
 		out = []
+		fog_cache: dict[tuple[int, int], np.ndarray] = {}
+		shift_px = int(self.params.get("temporal_shift_px", 4))
+		density_scale = float(self.params.get("density_compute_scale", 1.0))
+		fog_scale = float(self.params.get("fog_compute_scale", 1.0))
 		for i, frame in enumerate(frames):
 			if i not in selected:
 				out.append(frame.copy())
 				continue
 
 			h, w = frame.shape[:2]
-			density_map = (rng.random((h, w)) < m_s).astype(np.float32)
-			rain_layer = cv2.filter2D(density_map, -1, kernel)
-			rain_layer = cv2.GaussianBlur(rain_layer, (0, 0), sigmaX=0.5, sigmaY=0.5)
+			if density_scale >= 0.999:
+				density_map = (rng.random((h, w)) < m_s).astype(np.float32)
+				rain_layer = cv2.filter2D(density_map, -1, kernel)
+				rain_layer = cv2.GaussianBlur(rain_layer, (0, 0), sigmaX=0.5, sigmaY=0.5)
+			else:
+				sh, sw = _scaled_hw(h, w, density_scale)
+				density_map = (rng.random((sh, sw)) < m_s).astype(np.float32)
+				k_small = max(3, int(round(L_s * max(0.25, density_scale))))
+				if k_small % 2 == 0:
+					k_small += 1
+				kernel_small = _motion_blur_kernel(k_small, float(rng.uniform(0.0, 180.0)))
+				rain_small = cv2.filter2D(density_map, -1, kernel_small)
+				rain_small = cv2.GaussianBlur(rain_small, (0, 0), sigmaX=0.5, sigmaY=0.5)
+				rain_layer = cv2.resize(rain_small, (w, h), interpolation=cv2.INTER_LINEAR)
 			rain_layer = np.clip(rain_layer * float(rho_s), 0.0, 1.0)
 
 			I = frame.astype(np.float32)
@@ -343,8 +386,17 @@ class Rain(BaseNoiseLike):
 			Irain = np.clip(I * (1.0 - 0.3 * R3) + 200.0 * R3 * b_s, 0.0, 255.0)
 			Irain = np.clip(Irain * c_s, 0.0, 255.0)
 
-			side = _next_pow2(max(h, w))
-			fog_map = _diamond_square_map(side, 2.0, rng)[:h, :w]
+			key = (h, w)
+			if key not in fog_cache:
+				if fog_scale >= 0.999:
+					side = _next_pow2(max(h, w))
+					fog_cache[key] = _diamond_square_map(side, 2.0, rng)[:h, :w].astype(np.float32)
+				else:
+					sh, sw = _scaled_hw(h, w, fog_scale)
+					side = _next_pow2(max(sh, sw))
+					low = _diamond_square_map(side, 2.0, rng)[:sh, :sw].astype(np.float32)
+					fog_cache[key] = cv2.resize(low, (w, h), interpolation=cv2.INTER_CUBIC).astype(np.float32)
+			fog_map = _rolled_fog_map(fog_cache[key], rng, max_shift=shift_px)
 			Irain01 = Irain / 255.0
 			Irain = _fog_fusion(Irain01, fog_map, f_s) * 255.0
 			out.append(Irain.astype(np.uint8))

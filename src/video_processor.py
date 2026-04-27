@@ -4,7 +4,6 @@ import logging
 from pathlib import Path
 
 import cv2
-import imageio.v3 as iio
 import numpy as np
 from tqdm import tqdm
 
@@ -57,28 +56,39 @@ class VideoProcessor:
             raise ValueError("Cannot write empty frame list")
 
         ensure_dir(output_path.parent)
+        temp_path = output_path.with_name(f"{output_path.stem}.tmp{output_path.suffix}")
+        if temp_path.exists():
+            temp_path.unlink()
         try:
+            import imageio.v3 as iio
+
             rgb_frames = [cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) for frame in frames]
             iio.imwrite(
-                output_path,
+                temp_path,
                 rgb_frames,
                 fps=float(max(1.0, fps)),
                 codec="libx264",
                 ffmpeg_params=["-pix_fmt", "yuv420p"],
             )
+            temp_path.replace(output_path)
             return
         except Exception:
             pass
 
         h, w = frames[0].shape[:2]
         fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-        writer = cv2.VideoWriter(str(output_path), fourcc, fps, (w, h))
+        if temp_path.exists():
+            temp_path.unlink()
+        writer = cv2.VideoWriter(str(temp_path), fourcc, fps, (w, h))
         if not writer.isOpened():
             raise RuntimeError(f"Failed to create writer: {output_path}")
 
-        for frame in frames:
-            writer.write(frame)
-        writer.release()
+        try:
+            for frame in frames:
+                writer.write(frame)
+        finally:
+            writer.release()
+        temp_path.replace(output_path)
 
     def _save_preview(
         self,

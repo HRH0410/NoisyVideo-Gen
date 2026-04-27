@@ -6,19 +6,19 @@ from . import BaseNoiseLike
 
 
 def _sample_indices(rng: np.random.Generator, n: int, k: int) -> list[int]:
-    if n <= 0 or k <= 0:
+    if n <= 1 or k <= 0:
         return []
-    k = min(n, k)
+    # 用户要求：drop一半，repeat一半。这里的 k 应该被设为 n // 2。
+    k = n // 2
     return sorted(int(i) for i in rng.choice(n, size=k, replace=False))
 
 
 def _sample_from_pool(rng: np.random.Generator, pool: list[int], k: int) -> list[int]:
     """从给定候选池中无放回采样索引。"""
-    if not pool or k <= 0:
+    if not pool:
         return []
-    k = min(len(pool), k)
-    if k == len(pool):
-        return sorted(pool)
+    # 强制采样池的一半
+    k = max(1, len(pool) // 2)
     picked = rng.choice(len(pool), size=k, replace=False)
     return sorted(int(pool[int(i)]) for i in picked)
 
